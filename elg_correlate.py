@@ -104,22 +104,66 @@ for i, path in enumerate(paths):
     axes[0,1].set_xlabel('R DEPTH')
     axes[0,2].set_xlabel('Z DEPTH')
         
-    axes[1,0].set_xlabel('ELG TSR $b$')
-    axes[1,1].set_xlabel('ELG TSR $r$')
-    axes[1,2].set_xlabel('ELG TSR $z$')
-    axes[1,3].set_xlabel('ELG TSR tot')
+    axes[1,0].set_xlabel('ELG TSNR $b$')
+    axes[1,1].set_xlabel('ELG TSNR $r$')
+    axes[1,2].set_xlabel('ELG TSNR $z$')
+    axes[1,3].set_xlabel('ELG TSNR tot')
 
-    # result.append([np.median(btsnr), np.median(rtsnr), np.median(ztsnr), np.median(tsnr), bdepth, rdepth, zdepth, zeff])
+    result.append([np.median(btsnr), np.median(rtsnr), np.median(ztsnr), np.median(tsnr), bdepth, rdepth, zdepth, zeff])
 
-'''
-result = np.array(result)
+result = np.array(result).astype(np.float)
 
-def model(xvals, const):
-    return  1. - np.exp(-xvals / const)
+btsnr = result[:,0]
+rtsnr =	result[:,1]
+ztsnr =	result[:,2]
+tsnr  =	result[:,3]
 
-def X2(model):
-    return  np.sum((result[:,-1] - model)**2.)
+bdep  = result[:,4] 
+rdep  = result[:,5]
+zdep  = result[:,6]
 
-axes[1,2].plot(result[:,0], model(result[:,0], 0.5))
-'''
-pl.savefig('elgs.pdf')
+for i, xvals in enumerate([bdep, rdep, zdep]):
+    indx = np.argsort(xvals)
+
+    xvals = xvals[indx]
+    data = result[indx,-1]
+
+    def model(a, xvals):
+        _scaled = -xvals / a
+        return  65. * (1. - np.exp(_scaled))
+
+    def X2(a, xvals):
+        _model  = model(a, xvals)
+        return  np.sum((data - _model)**2.)
+
+    res   = minimize(X2, x0=[500.], args=(xvals))
+    const = res.x[0]
+
+    axes[0,i].plot(xvals, model(const, xvals), c='k', lw=0.25)
+    axes[0,i].set_title('1. - exp(x / {:.3f}) r.m.s. {:.3f}'.format(const, np.std(data - model(const, xvals))), fontsize=9.)
+
+for i, xvals in enumerate([btsnr, rtsnr, ztsnr, tsnr]):
+    indx = np.argsort(xvals)
+
+    xvals = xvals[indx]
+    data = result[indx,-1]
+    
+    def model(a, xvals):
+        _scaled = -xvals / a
+
+        return  65. * (1. - np.exp(_scaled))
+
+    def X2(a, xvals):
+        _model  = model(a, xvals)
+        return  np.sum((data - _model)**2.)
+
+    res   = minimize(X2, x0=[.5], args=(xvals))
+    const = res.x[0]
+
+    axes[1,i].plot(xvals, model(const, xvals), c='k', lw=0.25)
+    axes[1,i].set_title('1. - exp(x / {:.3f}) r.m.s. {:.3f}'.format(const, np.std(data - model(const, xvals))), fontsize=9.)
+
+fig.suptitle('Lynx: Blanc singles')
+    
+pl.show()
+# pl.savefig('elgs.pdf')

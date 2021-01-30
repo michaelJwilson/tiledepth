@@ -13,7 +13,7 @@ tile = '80608'
 
 scr = os.environ['CSCRATCH']
 blanc = '/global/cfs/cdirs/desi/spectro/redux/blanc/'
-cframes = list(glob.glob('/global/cfs/cdirs/desi/spectro/redux/blanc/exposures/*/*/cframe-r0-*.fits'))
+cframes = list(glob.glob('/global/cfs/cdirs/desi/spectro/redux/blanc/exposures/*/*/cframe-z0-*.fits'))
 calibdir = '/global/cfs/cdirs/desi/spectro/desi_spectro_calib/trunk/'
 
 os.environ['DESI_SPECTRO_CALIB'] = '/global/cfs/cdirs/desi/spectro/desi_spectro_calib/trunk/'
@@ -62,6 +62,11 @@ for x in cframes:
                 ens = '/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/'
                 out = x.replace(blanc, scr + '/trash/')
 
+                if os.path.exists(out):
+                    print('Skipping written: {}'.format(out))
+
+                
+                
                 Path(os.path.dirname(out)).mkdir(parents=True, exist_ok=True)
                 
                 # desi_process_exposure --infile $INFILE -o $OUTFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --psf $PSF --nea $NEA --ensembledir $ENSEMBLE
