@@ -163,7 +163,7 @@ for i, xvals in enumerate([btsnr, rtsnr, ztsnr, tsnr]):
     axes[1,i].plot(xvals, model(const, xvals), c='k', lw=0.25)
     axes[1,i].set_title('1. - exp(x / {:.3f}) r.m.s. {:.3f}'.format(const, np.std(data - model(const, xvals))), fontsize=9.)
 
-fig.suptitle('Lynx: Blanc singles')
+fig.suptitle('Lynx singles: Blanc')
     
 pl.show()
 # pl.savefig('elgs.pdf')
