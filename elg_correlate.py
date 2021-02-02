@@ -28,16 +28,16 @@ result = []
 for i, path in enumerate(paths):
     try:
         dat   = fits.open(path)
-        rtsnr = dat['SCORES'].data['LRGTSNR_R']
+        rtsnr = dat['SCORES'].data['ELGTSNR_R']
         
         cam   = path.split('/')[-1].split('-')[1]
         petal = cam[1]
     
         dat   = fits.open(path.replace('r0', 'b0'))
-        btsnr = dat['SCORES'].data['LRGTSNR_B']
+        btsnr = dat['SCORES'].data['ELGTSNR_B']
 
         dat   = fits.open(path.replace('r0', 'z0'))
-        ztsnr = dat['SCORES'].data['LRGTSNR_Z']
+        ztsnr = dat['SCORES'].data['ELGTSNR_Z']
 
         # Add up. tsnr^2.
         tsnr  = btsnr + rtsnr + ztsnr
@@ -111,6 +111,7 @@ for i, path in enumerate(paths):
 
     result.append([np.median(btsnr), np.median(rtsnr), np.median(ztsnr), np.median(tsnr), bdepth, rdepth, zdepth, zeff])
 
+#
 result = np.array(result).astype(np.float)
 
 btsnr = result[:,0]
@@ -142,7 +143,7 @@ for i, xvals in enumerate([bdep, rdep, zdep]):
     axes[0,i].plot(xvals, model(const, xvals), c='k', lw=0.25)
     axes[0,i].set_title('1. - exp(x / {:.3f}) r.m.s. {:.3f}'.format(const, np.std(data - model(const, xvals))), fontsize=9.)
 
-for i, xvals in enumerate([btsnr, rtsnr, ztsnr, tsnr]):
+for i, (xvals, x0) in enumerate(zip([btsnr, rtsnr, ztsnr, tsnr], [0.5, 40., 400., 400.])):
     indx = np.argsort(xvals)
 
     xvals = xvals[indx]
@@ -157,7 +158,7 @@ for i, xvals in enumerate([btsnr, rtsnr, ztsnr, tsnr]):
         _model  = model(a, xvals)
         return  np.sum((data - _model)**2.)
 
-    res   = minimize(X2, x0=[.5], args=(xvals))
+    res   = minimize(X2, x0=x0, args=(xvals))
     const = res.x[0]
 
     axes[1,i].plot(xvals, model(const, xvals), c='k', lw=0.25)

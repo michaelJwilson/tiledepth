@@ -3,10 +3,11 @@ import glob
 import astropy.io.fits as fits
 import numpy as np
 
-from pathlib import Path
+from   pathlib import Path
 from   desispec.io.meta import findfile, specprod_root
 from   desispec.calibfinder import CalibFinder
 from   desispec.io import read_frame
+
 
 targets = 'ELG' # 'QSO+LRG'
 tile = '80608'
@@ -42,6 +43,10 @@ for x in cframes:
                 camera = parts[1] 
 
                 calib  = findfile('fluxcalib', night=night, expid=expid, camera=camera, specprod_dir=None)
+
+                print(calib)
+
+                exit(0)
                 
                 # findfile('cframe', night=night, expid=expid, camera=camera, specprod_dir=blanc)
                 cframe  = fits.open(x)
@@ -49,12 +54,10 @@ for x in cframes:
                 hdr    = hdr.replace('SPECPROD', blanc)
 
                 tileid = cframe[0].header['TILEID']
-
-                if tile != tile:
+                '''
+                if tileid != tile:
                     continue
-                                    
-                # print(night, expid, camera, calib, hdr)
-
+                '''                 
                 iin = x.replace('cframe', 'frame')
                 sky = x.replace('cframe', 'sky')
                 psf = sky.replace('sky', 'psf')
@@ -64,9 +67,7 @@ for x in cframes:
 
                 if os.path.exists(out):
                     print('Skipping written: {}'.format(out))
-
-                
-                
+                    
                 Path(os.path.dirname(out)).mkdir(parents=True, exist_ok=True)
                 
                 # desi_process_exposure --infile $INFILE -o $OUTFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --psf $PSF --nea $NEA --ensembledir $ENSEMBLE
