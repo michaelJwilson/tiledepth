@@ -30,6 +30,6 @@ for i,f in enumerate(flux) :
 
 plt.plot(flux,nea,"-")
 plt.xlabel("flux (electrons)")
-plt.ylabel("npix (NEA)")
+plt.ylabel(r"$\alpha \cdot$ npix (NEA)")
 plt.grid()
 plt.show()

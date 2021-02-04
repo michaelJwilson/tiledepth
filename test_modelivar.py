@@ -79,16 +79,16 @@ def main(args):
 
         indx = sky_indx[i]
         
-        axes[i].plot(skymodel.wave, frame.ivar[indx,:], lw=0.4, label='Sky frame IVAR')
-        axes[i].plot(skymodel.wave, 1./rd_var[indx,:], lw=0.4, label='Model rd. IVAR')
-        axes[i].plot(skymodel.wave, 1./sky_var[indx,:], lw=0.4, label='Model Sky IVAR')
-        axes[i].plot(skymodel.wave, 1./var[indx,:], lw=0.4, label=r'Model IVAR')
-        axes[i].plot(skymodel.wave, 1./calc_alphavar(alpha)[i,:], lw=0.4, label=r'$\alpha$ Model IVAR')
+        axes[i].plot(skymodel.wave, frame.ivar[indx,:], lw=0.4, label='Sky frame IVAR', alpha=0.4)
+        axes[i].plot(skymodel.wave, 1./rd_var[indx,:], lw=0.4, label='Model rd. IVAR', alpha=0.4)
+        axes[i].plot(skymodel.wave, 1./sky_var[indx,:], lw=0.4, label='Model Sky IVAR', alpha=0.4)
+        axes[i].plot(skymodel.wave, 1./var[indx,:], lw=0.4, label=r'Model IVAR', alpha=0.4)
+        axes[i].plot(skymodel.wave, 1./calc_alphavar(alpha)[i,:], lw=0.4, label=r'$\alpha$ Model IVAR', alpha=0.4)
         axes[i].set_title(r'Fiber {:d} ($\alpha$ = {:.6f})'.format(indx, alpha))
         axes[i].set_xlabel(r'Wavelength [$AA$]')
         axes[i].set_yscale('log')
-        axes[i].set_ylim(bottom=2.e-3)
-        axes[i].legend(frameon=False)
+        axes[i].set_ylim(bottom=2.e-3, top=3.e-2)
+        axes[i].legend(frameon=False, loc=2)
         
     axes[0].set_ylabel('e/A')
         

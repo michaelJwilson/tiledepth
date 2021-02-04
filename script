@@ -19,6 +19,6 @@ export ENSEMBLE=/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/
 
 export OUTFILE='/global/homes/m/mjwilson/sandbox/dev_tiledepth/cframe-'$BAND'0-00069580.fits'
 
-# desi_process_exposure --infile $INFILE -o $OUTFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --psf $PSF --nea $NEA --ensembledir $ENSEMBLE
-python test_modelivar.py --infile $INFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --psf $PSF --nea $NEA
+desi_process_exposure --infile $INFILE -o $OUTFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --tsnr
+# python test_modelivar.py --infile $INFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --psf $PSF --nea $NEA
 

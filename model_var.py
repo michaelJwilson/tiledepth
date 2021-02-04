@@ -31,8 +31,8 @@ def calc_var(bands, neadir, psfpath, frame, fluxcalib, fiberflat, skymodel, comp
     
     for label, x in zip(['RDNOISE', 'NEA', 'ANGPERPIX'], [rdnoise, npix, angperpix]):
         print('{} \t {:.3f} +- {:.3f}'.format(label.ljust(10), np.median(x), np.std(x)))
-        
+
     for band in bands:                    
-        denom = var_model(rdnoise, npix, angperpix, fiberflat, skymodel, components=components)
+        denom = var_model(rdnoise, npix, angperpix, 0.8, fiberflat, skymodel, components=components)
 
     return  denom

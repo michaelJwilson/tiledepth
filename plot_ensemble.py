@@ -38,6 +38,28 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
     for f in filters:
         axes[i].plot(f._wavelength, f.response * smooth.max() / f.response.max(), '-', c='k', alpha=0.5, lw=0.2)
         
+    if tracer == 'bgs':
+        colors = ['blue', 'red', 'green']
+        les    = [3727., 6560., 6718.]
+        zlo, zhi = 0.01, 0.4
+
+    if tracer == 'lrg':
+        colors = ['blue', 'green']
+        les    = [3934.8, 5176.]
+        zlo, zhi = 0.7, 0.9
+        
+    if tracer == 'elg':
+        colors = ['blue', 'green']
+        les    = [3727., 5008.240]
+        zlo, zhi = 0.6, 1.6
+
+    if tracer == 'qso':
+        colors = []
+        
+    for color, le in zip(colors, les):
+        axes[i].axvspan(le * (1.+zlo), le * (1.+zhi), alpha=0.1, color=color)
+
+    axes[i].set_xlim(3500., 1.e4)
     axes[i].set_ylabel(r'$\langle \Delta F^2 \rangle$')
     axes[i].legend(frameon=False)        
 
