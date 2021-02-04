@@ -15,15 +15,18 @@ pl.rcParams.update(params)
 scr = os.environ['CSCRATCH']
 dmodel = os.environ['DESIMODEL']
 
-'''
+
 for band in ['b', 'r', 'z']:
     for petal in np.arange(10).astype(str):
         cam = band + petal
         cmd = 'python desispec/scripts/master_nea.py -i /global/homes/m/mjwilson/blanc/exposures/20201223/00069580/psf-{}-00069580.fits --outdir {}/desi/nea/'.format(cam, scr)
 
-        os.system(cmd)
-'''
+        print(cmd)
+        
+        # os.system(cmd)
 
+        exit(0)
+        
 fig, axes = plt.subplots(5, 6, figsize=(20,20))
 
 root = '{}/desi/nea/'.format(scr)
