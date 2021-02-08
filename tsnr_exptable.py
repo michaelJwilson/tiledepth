@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 from   astropy.table import Table, vstack, join
 
 
-scr = os.environ['CSCRATCH']
-root = scr+'/desi/tsnr/'
+scr  = os.environ['CSCRATCH']
+root = scr+'/desi/tsnr/blanc/'
 
 cpath = '/global/cfs/cdirs/desi/survey/observations/SV1/sv1-exposures.fits'
 conds = Table.read(cpath)
-conds = conds['EXPID', 'B_DEPTH', 'R_DEPTH', 'Z_DEPTH']
+conds = conds['EXPID', 'EXPTIME', 'B_DEPTH', 'R_DEPTH', 'Z_DEPTH']
 
 petals = np.arange(10).astype(str)
 bands = ['b', 'r', 'z']
@@ -21,7 +21,8 @@ result = None
 
 for petal in petals:
     print(petal)
-    
+
+    # b{petal}
     bdat = Table.read(root + 'summary_{}.fits'.format('b' + petal))
     rdat = Table.read(root + 'summary_{}.fits'.format('r' + petal))
     zdat = Table.read(root + 'summary_{}.fits'.format('z' + petal))
@@ -33,10 +34,10 @@ for petal in petals:
     ssum['PETAL'] = petal
     
     for t in ['ELGTSNR', 'BGSTSNR', 'QSOTSNR', 'LRGTSNR']:
-        ssum[t] = bdat[t] + rdat[t] + zdat[t]
+        ssum[t]     = bdat[t] + rdat[t] + zdat[t]
         ssum[t+'B'] = bdat[t]
-        ssum[t+'R'] = bdat[t]
-        ssum[t+'Z'] = bdat[t]
+        ssum[t+'R'] = rdat[t]
+        ssum[t+'Z'] = zdat[t]
         
     # ssum.pprint()
 

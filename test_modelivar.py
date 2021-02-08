@@ -13,6 +13,7 @@ from desispec.specscore import compute_and_append_frame_scores
 from desispec.fiberbitmasking import get_fiberbitmasked_frame
 from model_var import calc_var
 from scipy.optimize import minimize
+from scipy.ndimage import median_filter
 
 import argparse
 import sys
@@ -79,11 +80,11 @@ def main(args):
 
         indx = sky_indx[i]
         
-        axes[i].plot(skymodel.wave, frame.ivar[indx,:], lw=0.4, label='Sky frame IVAR', alpha=0.4)
-        axes[i].plot(skymodel.wave, 1./rd_var[indx,:], lw=0.4, label='Model rd. IVAR', alpha=0.4)
-        axes[i].plot(skymodel.wave, 1./sky_var[indx,:], lw=0.4, label='Model Sky IVAR', alpha=0.4)
-        axes[i].plot(skymodel.wave, 1./var[indx,:], lw=0.4, label=r'Model IVAR', alpha=0.4)
-        axes[i].plot(skymodel.wave, 1./calc_alphavar(alpha)[i,:], lw=0.4, label=r'$\alpha$ Model IVAR', alpha=0.4)
+        axes[i].plot(skymodel.wave, median_filter(frame.ivar[indx,:], 10), lw=0.4, label='Sky frame IVAR', alpha=0.4)
+        # axes[i].plot(skymodel.wave, 1./rd_var[indx,:], lw=0.4, label='Model rd. IVAR', alpha=0.4)
+        # axes[i].plot(skymodel.wave, 1./sky_var[indx,:], lw=0.4, label='Model Sky IVAR', alpha=0.4)
+        # axes[i].plot(skymodel.wave, 1./var[indx,:], lw=0.4, label=r'Model IVAR', alpha=0.4)
+        axes[i].plot(skymodel.wave, median_filter(1./calc_alphavar(alpha)[i,:], 10), lw=0.4, label=r'$\alpha$ Model IVAR', alpha=0.4)
         axes[i].set_title(r'Fiber {:d} ($\alpha$ = {:.6f})'.format(indx, alpha))
         axes[i].set_xlabel(r'Wavelength [$AA$]')
         axes[i].set_yscale('log')

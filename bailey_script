@@ -1,22 +1,23 @@
 # ls ~/blanc/exposures/20201223/00069580
 # read_fiberflat(self.calibdir + '/' + CalibFinder([self.cframes[cam].meta]).data['FIBERFLAT'])
 
-export NIGHT=20201223  
+export NIGHT=20201215
+export EXPID=00067972
 
-export BAND='z'
+export BAND='b'
 
 export PROD=/global/cfs/cdirs/desi/spectro/redux/blanc/
-export INFILE=$PROD'/exposures/20201223/00069580/frame-'$BAND'0-00069580.fits'
-export CALIB=$PROD'/exposures/20201223/00069580/fluxcalib-'$BAND'0-00069580.fits'
-export SKY=$PROD'/exposures/20201223/00069580/sky-'$BAND'0-00069580.fits'
+export INFILE=$PROD'/exposures/'$NIGHT'/'$EXPID'/frame-'$BAND'0-'$EXPID'.fits'
+export CALIB=$PROD'/exposures/'$NIGHT'/'$EXPID'/fluxcalib-'$BAND'0-'$EXPID'.fits'
+export SKY=$PROD'/exposures/'$NIGHT'/'$EXPID'/sky-'$BAND'0-'$EXPID'.fits'
 export DESI_SPECTRO_CALIB=/global/cfs/cdirs/desi/spectro/desi_spectro_calib/trunk/
-export FIBERFLAT=$DESI_SPECTRO_CALIB'/spec/sm4/fiberflatnight-'$BAND'0-20201214.fits'
-export PSF=$PROD'/exposures/20201223/00069580/psf-'$BAND'0-00069580.fits'
+export FIBERFLAT=$DESI_SPECTRO_CALIB'spec/sm4/fiberflatnight-'$BAND'0-'20201214'.fits'
+export PSF=$PROD'/exposures/'$NIGHT'/'$EXPID'/psf-'$BAND'0-'$EXPID'.fits'
 
 export NEA='/project/projectdirs/desi/users/mjwilson/master_nea/masternea_'$BAND'0.fits'
 export ENSEMBLE=/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/
 
-export OUTFILE='/global/homes/m/mjwilson/sandbox/tiledepth/cframe-'$BAND'0-00069580.fits'
+export OUTFILE='/global/homes/m/mjwilson/sandbox/tiledepth/cframe-'$BAND'0-'$EXPID'.fits'
 
 desi_process_exposure --infile $INFILE -o $OUTFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --tsnr
 # python test_modelivar.py --infile $INFILE --calib $CALIB --sky $SKY --fiberflat $FIBERFLAT --psf $PSF --nea $NEA

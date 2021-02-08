@@ -28,11 +28,13 @@ def calc_var(bands, neadir, psfpath, frame, fluxcalib, fiberflat, skymodel, comp
 
     npix = nea(fibers, frame.wave)
     angperpix = angperpix(fibers, frame.wave)
+
+    angperspecbin = np.mean(np.gradient(frame.wave))
     
-    for label, x in zip(['RDNOISE', 'NEA', 'ANGPERPIX'], [rdnoise, npix, angperpix]):
+    for label, x in zip(['RDNOISE', 'NEA', 'ANGPERPIX', 'ANGPERSPECBIN'], [rdnoise, npix, angperpix, angperspecbin]):
         print('{} \t {:.3f} +- {:.3f}'.format(label.ljust(10), np.median(x), np.std(x)))
 
     for band in bands:                    
-        denom = var_model(rdnoise, npix, angperpix, 0.8, fiberflat, skymodel, components=components)
+        denom = var_model(rdnoise, npix, angperpix, angperspecbin, fiberflat, skymodel, components=components)
 
     return  denom

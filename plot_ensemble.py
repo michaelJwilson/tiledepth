@@ -7,13 +7,15 @@ from   astropy.convolution import convolve, Box1DKernel
 
 import speclite.filters
 
-root    = '/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/' 
-root    = '/global/cscratch1/sd/mjwilson/trash/'
+# root  = '/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/' 
+# root  = '/global/cscratch1/sd/mjwilson/trash/'
+root    = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
 
 filters = speclite.filters.load_filters('decam2014-*')
 
 tracers = ['bgs', 'lrg', 'elg', 'qso']
- 
+tracers = ['bgs', 'lrg', 'elg', 'qso']
+
 colors  = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
 fig, axes = plt.subplots(len(tracers), 1, figsize=(7.5, 5 * len(tracers)))
