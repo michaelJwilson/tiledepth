@@ -14,10 +14,9 @@ root    = '/global/cscratch1/sd/mjwilson/trash/'
 
 filters = speclite.filters.load_filters('decam2014-*')
 
-tracers = ['lrg']
+tracers = ['bgs', 'lrg', 'elg', 'qso']
 
 colors  = plt.rcParams['axes.prop_cycle'].by_key()['color']
-
 
 nfig    = np.maximum(len(tracers), 2)
 fig, axes = plt.subplots(nfig, 1, figsize=(7.5, 5 * nfig))
@@ -46,7 +45,7 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
         
     if tracer == 'bgs':
         colors = ['blue', 'red', 'green']
-        les    = [3727., 6560., 6718.]
+        les    = [3727., 6560., 5008.240]
 
     if tracer == 'lrg':
         colors = ['blue', 'green']
@@ -57,7 +56,8 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
         les    = [3727., 5008.240]
 
     if tracer == 'qso':
-        colors = []
+        colors = ['blue', 'red', 'cyan', 'green']
+        les    = [1215.24, 1240.81, 1397.61, 1908.734] 
         
     for color, le in zip(colors, les):
         axes[i].axvspan(le * (1.+zlo), le * (1.+zhi), alpha=0.1, color=color)
