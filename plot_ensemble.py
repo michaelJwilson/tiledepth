@@ -63,9 +63,11 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
         axes[i].axvspan(le * (1.+zlo), le * (1.+zhi), alpha=0.1, color=color)
 
     axes[i].set_xlim(3500., 1.e4)
-    axes[i].set_ylabel(r'$\langle \Delta F^2 \rangle$')
+    axes[i].set_ylabel(r'$\sqrt{\langle \Delta F^2 \rangle}$')
     axes[i].legend(frameon=False)        
 
 axes[-1].set_xlabel('Wavelength [AA]')
-    
+
+fig.suptitle('TSNR Ensemble: 100 AA', y=0.95)    
+
 pl.show()
