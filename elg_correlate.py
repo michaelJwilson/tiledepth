@@ -5,7 +5,7 @@ import astropy.io.fits as fits
 import matplotlib.pyplot as plt
 
 from   astropy.table import Table
-from   scipy         import stats
+from   scipy import stats
 
 from   desitarget.sv1.sv1_targetmask import desi_mask as sv1_desi_mask
 from   desitarget.sv1.sv1_targetmask import bgs_mask as sv1_bgs_mask
@@ -15,9 +15,11 @@ from   scipy.optimize import minimize
 zbests = glob.glob('/global/cscratch1/sd/raichoor/spectro/redux/blanc/tiles/80608/*/zbest-?-80608-*.fits')
 expids = [x.split('/')[-1].split('-')[3].replace('.fits', '') for x in zbests]
 
-expids = [np.int(x) for x in expids if x[0] == '0']
+expids = [np.int(x) for x in expids if x[0:2] == '00']
 
-paths  = glob.glob('/global/cscratch1/sd/mjwilson/trash/exposures/*/*/cframe-r?-*.fits')
+root = '/global/cscratch1/sd/mjwilson/trash/exposures/'
+# root   = '/global/cscratch1/sd/mjwilson/desi/tsnr/blanc/cframes/exposures/'
+paths  = glob.glob(root + '/*/*/cframe-r?-*.fits')
 
 conds  = Table.read('sv1-exposures.fits')
 
@@ -49,7 +51,11 @@ for i, path in enumerate(paths):
 
     if expid not in expids:
         continue
-
+    '''
+    if expid == 67769:
+        print('Skipping {}'.format(expid))
+        continue
+    ''' 
     night = dat[0].header['NIGHT']
     flavor = dat[0].header['FLAVOR']
 
@@ -88,11 +94,14 @@ for i, path in enumerate(paths):
     bdepth = sample['B_DEPTH']
     rdepth = sample['R_DEPTH']
     zdepth = sample['Z_DEPTH']
+
+    if zdepth > 1800.:
+        print(bdepth[0], rdepth[0], zdepth[0], zeff, expid, petal)
     
     axes[0,0].plot(bdepth, zeff, marker='.', c='k', markersize=2)
     axes[0,1].plot(rdepth, zeff, marker='.', c='k', markersize=2)
     axes[0,2].plot(zdepth, zeff, marker='.', c='k', markersize=2)
-    
+
     for i in range(4):
         axes[0,i].set_ylim(0., 75.)
         axes[1,i].set_ylim(0., 75.)

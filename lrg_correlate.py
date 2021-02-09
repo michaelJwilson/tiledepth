@@ -9,7 +9,11 @@ from   scipy         import stats
 
 
 zhou  = Table.read('/global/cscratch1/sd/rongpu/desi/sv1/single_exp_coadd_blanc/lrg_redshift_efficiency.fits') 
-paths = glob.glob('/global/cscratch1/sd/mjwilson/trash/exposures/*/*/cframe-r?-*.fits')
+
+# root = '/global/cscratch1/sd/mjwilson/trash/exposures/'
+root = '/global/cscratch1/sd/mjwilson/desi/tsnr/blanc/cframes/exposures/'   
+
+paths = glob.glob(root + '/*/*/cframe-r?-*.fits')
 
 # ['fail_frac_lrg_sv', 'fail_frac_lrg_opt', 'fail_frac_lrg_ir', 'fail_n_lrg_sv', 'fail_n_lrg_opt', 'fail_n_lrg_ir']
 
@@ -42,17 +46,18 @@ for i, path in enumerate(paths):
         
     expid = np.int(dat[0].header['EXPID'])
     night = dat[0].header['NIGHT']
-
-    zexp  = zhou[zhou['EXPID'] == expid]
-
+    
     flavor = dat[0].header['FLAVOR']
 
     if flavor != 'science':
         continue
+
+    zexp  = zhou[zhou['EXPID'] == expid]
     
     print('Solving for {} of {}'.format(i, len(paths)))
 
     if len(zexp) > 0:
+        # In Rongpus LRG reductions. 
         axes[0,0].plot(np.median(btsnr), zexp['B_DEPTH'].data, marker='.', c='k', markersize=2)
         axes[0,1].plot(np.median(rtsnr), zexp['R_DEPTH'].data, marker='.', c='k', markersize=2)
         axes[0,2].plot(np.median(ztsnr), zexp['Z_DEPTH'].data, marker='.', c='k', markersize=2)
@@ -94,5 +99,5 @@ axes[1,2].set_ylabel(r'LRG IR: failure fraction')
 axes2.set_xlabel(r'LRG <TSNR>')
 axes2.set_ylabel(r'$\Delta \chi^2$')
 
-fig.savefig('fig1.pdf')
-fig2.savefig('fig2.pdf')
+fig.savefig('plots/fig1.pdf')
+fig2.savefig('plots/fig2.pdf')
