@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import astropy.io.fits as fits
 import matplotlib.pyplot as plt
 import pylab as pl
@@ -8,22 +9,25 @@ from   astropy.convolution import convolve, Box1DKernel
 import speclite.filters
 
 # root  = '/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/' 
-# root  = '/global/cscratch1/sd/mjwilson/trash/'
-root    = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
+root    = '/global/cscratch1/sd/mjwilson/trash/'
+# root  = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
 
 filters = speclite.filters.load_filters('decam2014-*')
 
-tracers = ['bgs', 'lrg', 'elg', 'qso']
-tracers = ['bgs', 'lrg', 'elg', 'qso']
+tracers = ['lrg']
 
 colors  = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
-fig, axes = plt.subplots(len(tracers), 1, figsize=(7.5, 5 * len(tracers)))
+
+nfig    = np.maximum(len(tracers), 2)
+fig, axes = plt.subplots(nfig, 1, figsize=(7.5, 5 * nfig))
 
 for i, (tracer, color) in enumerate(zip(tracers, colors)):
     dat = fits.open(root + '/tsnr-ensemble-{}.fits'.format(tracer))
     nmodel=dat[0].header['NMODEL']
-
+    zlo=dat[0].header['ZLO']
+    zhi=dat[0].header['ZHI']
+    
     for band in ['B', 'R', 'Z']:
         wave   = dat['WAVE_{}'.format(band)].data
         dflux  = dat['DFLUX_{}'.format(band)].data[0,:]
@@ -43,17 +47,14 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
     if tracer == 'bgs':
         colors = ['blue', 'red', 'green']
         les    = [3727., 6560., 6718.]
-        zlo, zhi = 0.01, 0.4
 
     if tracer == 'lrg':
         colors = ['blue', 'green']
         les    = [3934.8, 5176.]
-        zlo, zhi = 0.7, 0.9
         
     if tracer == 'elg':
         colors = ['blue', 'green']
         les    = [3727., 5008.240]
-        zlo, zhi = 0.6, 1.6
 
     if tracer == 'qso':
         colors = []

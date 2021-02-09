@@ -13,10 +13,12 @@ from   desitarget.sv1.sv1_targetmask import bgs_mask as sv1_bgs_mask
 from   scipy.optimize import minimize
 
 
-tracer = 'ELG' # ['ELG', 'LRG+QSO', 'BGS+MWS']
-subset = 'ELG'
-svtype = 'ELG_SV_GTOT'
-
+program  = 'QSO+LRG'         # ['ELG', 'LRG+QSO', 'BGS+MWS']
+tsnrtype = 'QSO'
+svtype   = 'QSO_RF_4PASS'    # ['ELG_FDR_GTOT', 'ELG_FDR_GFIB']
+                             # ['LRG_OPT', 'LRG_IR']
+                             # ['QSO_COLOR_4PASS', 'QSO_COLOR_8PASS']
+                        
 zbests = glob.glob('/global/cfs/cdirs/desi/spectro/redux/blanc/tiles/*/exposures/zbest-*.fits')
 expids = [os.path.basename(x).split('-')[-1].replace('.fits', '') for x in zbests]
 expids = [np.int(x) for x in expids if x[0:2] == '00']
@@ -26,7 +28,6 @@ root   = '/global/cscratch1/sd/mjwilson/desi/tsnr/blanc/cframes/exposures/'
 paths  = glob.glob(root + '/*/*/cframe-r?-*.fits')
 
 conds  = Table.read('sv1-exposures.fits')
-# print(conds.dtype.names)
 
 fig,  axes  = plt.subplots(2, 4, figsize=(20, 20))
 
@@ -38,16 +39,16 @@ for i, path in enumerate(paths):
         dat   = fits.open(path)
         # tids  = dat['FIBERMAP'].data['TARGETID'] 
         
-        rtsnr = dat['SCORES'].data['{}TSNR_R'.format(subset)]
+        rtsnr = dat['SCORES'].data['{}TSNR_R'.format(tsnrtype)]
         
         cam   = path.split('/')[-1].split('-')[1]
         petal = cam[1]
     
         dat   = fits.open(path.replace('r0', 'b0'))
-        btsnr = dat['SCORES'].data['{}TSNR_B'.format(subset)]
+        btsnr = dat['SCORES'].data['{}TSNR_B'.format(tsnrtype)]
     
         dat   = fits.open(path.replace('r0', 'z0'))
-        ztsnr = dat['SCORES'].data['{}TSNR_Z'.format(subset)]
+        ztsnr = dat['SCORES'].data['{}TSNR_Z'.format(tsnrtype)]
 
         # Add up. tsnr^2.
         tsnr  = btsnr + rtsnr + ztsnr
@@ -70,7 +71,7 @@ for i, path in enumerate(paths):
 
     parts  = prog.split(' ')
 
-    if parts[1] != tracer:
+    if parts[1] != program:
         print('Skipping {}'.format(parts[1]))
         continue
 
@@ -96,7 +97,7 @@ for i, path in enumerate(paths):
     
     zeff   = 100. * len(zids) / len(tids)
 
-    # print(len(tids), len(zids), 100. * len(zids) / len(tids))
+    print(len(tids), len(zids), 100. * len(zids) / len(tids))
     
     axes[1,0].plot(np.median(btsnr), zeff, marker='.', c='k', markersize=2)
     axes[1,1].plot(np.median(rtsnr), zeff, marker='.', c='k', markersize=2)
@@ -117,17 +118,17 @@ for i, path in enumerate(paths):
         axes[0,i].set_ylim(0., 75.)
         axes[1,i].set_ylim(0., 75.)
 
-        axes[0,i].set_ylabel('{} z success [%]'.format(subset), fontsize=9)
-        axes[1,i].set_ylabel('{} z success [%]'.format(subset), fontsize=9)
+        axes[0,i].set_ylabel('{} z success [%]'.format(tsnrtype), fontsize=9)
+        axes[1,i].set_ylabel('{} z success [%]'.format(tsnrtype), fontsize=9)
         
     axes[0,0].set_xlabel('B DEPTH_EBVAIR')
     axes[0,1].set_xlabel('R DEPTH_EBVAIR')
     axes[0,2].set_xlabel('Z DEPTH_EBVAIR')
         
-    axes[1,0].set_xlabel('{} TSNR $b$'.format(subset))
-    axes[1,1].set_xlabel('{} TSNR $r$'.format(subset))
-    axes[1,2].set_xlabel('{} TSNR $z$'.format(subset))
-    axes[1,3].set_xlabel('{} TSNR tot'.format(subset))
+    axes[1,0].set_xlabel('{} TSNR $b$'.format(tsnrtype))
+    axes[1,1].set_xlabel('{} TSNR $r$'.format(tsnrtype))
+    axes[1,2].set_xlabel('{} TSNR $z$'.format(tsnrtype))
+    axes[1,3].set_xlabel('{} TSNR tot'.format(tsnrtype))
 
     result.append([np.median(btsnr), np.median(rtsnr), np.median(ztsnr), np.median(tsnr), bdepth, rdepth, zdepth, zeff])
             
@@ -167,7 +168,7 @@ for i, xvals in enumerate([bdep, rdep, zdep]):
     axes[0,i].set_title('{:.3f} (1. - exp(x / {:.3f})) r.m.s. {:.3f}'.format(constb, consta, np.std(data - model(res.x, xvals))), fontsize=9.)
     axes[0,i].set_ylim(0., 105.)
 
-for i, (xvals, x0) in enumerate(zip([btsnr, rtsnr, ztsnr, tsnr], [0.5, 40., 400., 400.])):
+for i, (xvals, x0) in enumerate(zip([btsnr, rtsnr, ztsnr, tsnr], [0.5, 40., 100., 100.])):
     indx = np.argsort(xvals)
 
     xvals = xvals[indx]
@@ -193,5 +194,5 @@ for i, (xvals, x0) in enumerate(zip([btsnr, rtsnr, ztsnr, tsnr], [0.5, 40., 400.
     axes[1,i].set_title('{:.3f} (1. - exp(x / {:.3f})) r.m.s. {:.3f}'.format(constb, consta, np.std(data - model(res.x, xvals))), fontsize=9.)
     axes[1,i].set_ylim(0., 105.)
 
-fig.suptitle('Blanc singles {}: {}'.format(tracer, svtype))
+fig.suptitle('Blanc singles {}: {}'.format(program, svtype))
 pl.show()
