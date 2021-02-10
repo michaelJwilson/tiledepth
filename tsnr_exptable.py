@@ -8,13 +8,13 @@ from   astropy.table import Table, vstack, join
 
 
 scr  = os.environ['CSCRATCH']
-root = scr+'/desi/tsnr/blanc/'
+root = scr+'/desi/tsnr/blanc/exptables/'
 
 cpath = '/global/cfs/cdirs/desi/survey/observations/SV1/sv1-exposures.fits'
 conds = Table.read(cpath)
 conds = conds['EXPID', 'EXPTIME', 'B_DEPTH', 'R_DEPTH', 'Z_DEPTH']
 
-petals = np.arange(10).astype(str)
+petals = np.arange(1).astype(str)
 bands = ['b', 'r', 'z']
 
 result = None
@@ -53,7 +53,11 @@ result         = result_binned
 
 result['EXPID'] = result['EXPID'].data.astype(np.int)
 
+# Remove transparency ~0.2 which blows up ELGTSNRB.
+result         = result[result['EXPID'] != 69416]
+
 result = join(result, conds, keys='EXPID', join_type='left')
+result.sort('ELGTSNRB')
 result.pprint()
 
 result.write(root + '/exptable.fits', format='fits', overwrite=True)

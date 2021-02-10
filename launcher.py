@@ -10,11 +10,14 @@ from   desispec.io import read_frame
 
 
 targets = 'BGS+MWS' # ['QSO+LRG', 'ELG', 'BGS+MWS']
-tile = np.int('80608')
+
+# tile = np.int('80608') # ELG
+# tile = np.int('80607')   # QSO+LRG
+tile = np.int('80618')
 
 scr = os.environ['CSCRATCH']
 blanc = '/global/cfs/cdirs/desi/spectro/redux/blanc/'
-cframes = list(glob.glob('/global/cfs/cdirs/desi/spectro/redux/blanc/exposures/*/*/cframe-r0-*.fits'))
+cframes = list(glob.glob('/global/cfs/cdirs/desi/spectro/redux/blanc/exposures/*/*/cframe-z0-*.fits'))
 calibdir = '/global/cfs/cdirs/desi/spectro/desi_spectro_calib/trunk/'
 outdir=scr + '/desi/tsnr/blanc/cframes/'
 
@@ -51,11 +54,11 @@ for x in cframes:
                 hdr    = hdr.replace('SPECPROD', blanc)
 
                 tileid = cframe[0].header['TILEID']
-                '''
+                
                 if tileid != tile:
                     print('Skipping tile {}'.format(tileid))
                     continue
-                '''
+                
                 iin = x.replace('cframe', 'frame')
                 sky = x.replace('cframe', 'sky')
                 psf = sky.replace('sky', 'psf')

@@ -9,8 +9,9 @@ from   astropy.convolution import convolve, Box1DKernel
 import speclite.filters
 
 # root  = '/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/' 
-root    = '/global/cscratch1/sd/mjwilson/trash/'
-# root  = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
+# root  = '/global/cscratch1/sd/mjwilson/trash/'
+root    = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
+# root  = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/10/'
 
 filters = speclite.filters.load_filters('decam2014-*')
 
@@ -18,7 +19,7 @@ tracers = ['bgs', 'lrg', 'elg', 'qso']
 
 colors  = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
-nfig    = np.maximum(len(tracers), 2)
+nfig = np.maximum(len(tracers), 2)
 fig, axes = plt.subplots(nfig, 1, figsize=(7.5, 5 * nfig))
 
 for i, (tracer, color) in enumerate(zip(tracers, colors)):
@@ -26,12 +27,14 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
     nmodel=dat[0].header['NMODEL']
     zlo=dat[0].header['ZLO']
     zhi=dat[0].header['ZHI']
+    smoothing=dat[0].header['SMOOTH']
     
     for band in ['B', 'R', 'Z']:
         wave   = dat['WAVE_{}'.format(band)].data
         dflux  = dat['DFLUX_{}'.format(band)].data[0,:]
-        
-        smooth = convolve(dflux, Box1DKernel(125), boundary='extend')
+
+        dwave  = np.mean(np.diff(wave))
+        smooth = convolve(dflux, Box1DKernel(np.ceil(100. / dwave)), boundary='extend')
 
         if band == 'B':
             label='{} ({})'.format(tracer, nmodel)
@@ -68,6 +71,6 @@ for i, (tracer, color) in enumerate(zip(tracers, colors)):
 
 axes[-1].set_xlabel('Wavelength [AA]')
 
-fig.suptitle('TSNR Ensemble: 100 AA', y=0.95)    
+fig.suptitle('TSNR Ensemble: {} AA'.format(smoothing), y=0.95)
 
 pl.show()

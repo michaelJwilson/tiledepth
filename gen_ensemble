@@ -1,10 +1,12 @@
 #!/usr/bin/python
 import os
 
-smooth = 10.0
-outdir = os.environ['CSCRATCH'] + '/trash/ensemble/'
+smooth = 100.0
 
-# Order of time. 
+# os.environ['CSCRATCH'] + '/trash/ensemble/' 
+outdir = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
+
+# Order of runtime. 
 for tracer in ['bgs', 'lrg', 'qso', 'elg']:
     cmd = 'python desispec/scripts/tsnr_ensemble.py --nmodel 1000 --tracer {} --outdir {} --smooth {} --Nz'.format(tracer, outdir, smooth)
 
