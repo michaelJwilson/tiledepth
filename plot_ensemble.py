@@ -9,8 +9,8 @@ from   astropy.convolution import convolve, Box1DKernel
 import speclite.filters
 
 # root  = '/project/projectdirs/desi/users/mjwilson/tsnr-ensemble/' 
-# root  = '/global/cscratch1/sd/mjwilson/trash/'
-root    = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
+root    = '/global/cscratch1/sd/mjwilson/trash/'
+# root  = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/'
 # root  = '/global/homes/m/mjwilson/sandbox/desimodel/trunk/data/tsnr/10/'
 
 filters = speclite.filters.load_filters('decam2014-*')

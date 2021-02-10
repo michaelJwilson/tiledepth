@@ -12,7 +12,7 @@ root = scr+'/desi/tsnr/blanc/exptables/'
 
 cpath = '/global/cfs/cdirs/desi/survey/observations/SV1/sv1-exposures.fits'
 conds = Table.read(cpath)
-conds = conds['EXPID', 'EXPTIME', 'B_DEPTH', 'R_DEPTH', 'Z_DEPTH']
+conds = conds['EXPID', 'EXPTIME', 'B_DEPTH', 'R_DEPTH', 'Z_DEPTH', 'GFA_FWHM_ASEC', 'GFA_TRANSPARENCY', 'GFA_SKY_MAG_AB']
 
 petals = np.arange(1).astype(str)
 bands = ['b', 'r', 'z']
@@ -57,8 +57,14 @@ result['EXPID'] = result['EXPID'].data.astype(np.int)
 result         = result[result['EXPID'] != 69416]
 
 result = join(result, conds, keys='EXPID', join_type='left')
-result.sort('ELGTSNRB')
-result.pprint()
+
+select=result[result['LRGTSNRB'] < 0.1]
+select.sort('B_DEPTH')
+select.pprint()
+
+badlist = select['EXPID']
+sconds = Table.read(cpath)
+sconds=sconds[np.isin(sconds['EXPID'], badlist)]
 
 result.write(root + '/exptable.fits', format='fits', overwrite=True)
 
@@ -73,7 +79,6 @@ del data['B_DEPTH']
 del data['R_DEPTH']
 del data['Z_DEPTH']
 
-
 names = data.dtype.names
 
 fig, axes = plt.subplots(len(names), len(names), figsize=(40,40))
@@ -84,7 +89,7 @@ for i, x in enumerate(names):
         if i >= j:
             axes[i,j].remove()
         
-        axes[i,j].plot(data[x].data, data[y].data, marker='.', lw=0.0, markersize=1, c='k')
+        axes[i,j].scatter(data[x].data, data[y].data, c= data['GFA_SKY_MAG_AB'].data, marker='.', s=.5)
         axes[i,j].set_xlabel(x, fontsize=5)
         axes[i,j].set_ylabel(y, fontsize=5)
 
