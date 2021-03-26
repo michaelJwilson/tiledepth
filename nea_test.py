@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -17,16 +16,15 @@ nea=np.zeros(flux.size)
 # typical readnoise variance
 var_readnoise = 3**2
 
-for i,f in enumerate(flux) :
-
+for i,f in enumerate(flux):
     # variance in pixel is readnoise + Poisson noise
     var_p = var_readnoise + f * P
 
     # variance of flux (inverse of Fisher)
-    var_f = 1/( np.sum( 1/var_p * P**2 ) )
+    var_f = 1./(np.sum( 1/var_p * P**2))
 
     # because we define nea such that var_f = f + nea*var_readnoise
-    nea[i] = (var_f - f )/var_readnoise
+    nea[i] = (var_f - f)/var_readnoise
 
 plt.plot(flux,nea,"-")
 plt.xlabel("flux (electrons)")

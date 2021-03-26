@@ -1,6 +1,7 @@
 # ls ~/blanc/exposures/20201223/00069580
 # read_fiberflat(self.calibdir + '/' + CalibFinder([self.cframes[cam].meta]).data['FIBERFLAT'])
 
+export SPECPROD='blanc'
 export DESI_SPECTRO_CALIB=/global/cfs/cdirs/desi/spectro/desi_spectro_calib/trunk/
 
 # Bailey example
@@ -21,7 +22,11 @@ export FIBERFLAT=/global/cfs/cdirs/desi/spectro/redux/blanc/calibnight/20201222/
 # export EXPID=00069261
 # export FIBERFLAT=/global/cfs/cdirs/desi/spectro/redux/blanc/calibnight/20201221/fiberflatnight-b0-20201221.fits
 
-export BAND='b'
+export NIGHT=20201222
+export EXPID=00069401
+export FIBERFLAT='/global/cfs/cdirs/desi/spectro/redux/blanc/calibnight/20201222/fiberflatnight-z0-20201222.fits'
+
+export BAND='z'
 
 export PROD=/global/cfs/cdirs/desi/spectro/redux/blanc/
 export INFILE=$PROD'/exposures/'$NIGHT'/'$EXPID'/frame-'$BAND'0-'$EXPID'.fits'

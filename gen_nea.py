@@ -11,10 +11,9 @@ params = {'axes.labelsize': size, 'axes.titlesize': size, 'xtick.labelsize': siz
 
 pl.rcParams.update(params)
 
-
+'''
 scr = os.environ['CSCRATCH']
 dmodel = os.environ['DESIMODEL']
-
 
 for band in ['b', 'r', 'z']:
     for petal in np.arange(10).astype(str):
@@ -26,11 +25,12 @@ for band in ['b', 'r', 'z']:
         # os.system(cmd)
 
         exit(0)
-        
+'''        
 fig, axes = plt.subplots(5, 6, figsize=(20,20))
 
-root = '{}/desi/nea/'.format(scr)
+# root = '{}/desi/nea/'.format(scr)
 # root = dmodel + '/data/specpsf/nea/'
+root = '/global/homes/m/mjwilson/desimodel/trunk/data/specpsf/nea/'
 
 col  = 0
 
